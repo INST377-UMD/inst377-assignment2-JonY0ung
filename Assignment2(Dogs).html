@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dogs Page</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/glider-js@1/glider.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/glider-js@1/glider.min.js"></script>
+    <style>
+      .glider-contain {
+        width: 80%;
+        margin: auto;
+        margin-top: 20px;
+      }
+      .glider img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .custom-btn {
+        margin: 5px;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .custom-btn:hover {
+        background-color: #45a049;
+      }
+      .audio-box {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid black;
+      }
+      nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 10px;
+        background-color: #4264e2;
+      }
+      nav ul li {
+        display: inline;
+      }
+      nav ul li a {
+        text-decoration: none;
+        color: rgb(77, 203, 128);
+        padding: 10px;
+      }
+      nav ul li a:hover {
+        background-color: #a27878;
+      }
+      #breedInfo {
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+    <nav>
+      <ul class="navbar">
+        <li><a href="Assignment2(Home).html">Home</a></li>
+        <li><a href="Assignment2(stocks).html">Stocks</a></li>
+        <li><a href="Assignment2(Dogs).html">Dogs</a></li>
+      </ul>
+    </nav>
+  </head>
+  <body>
+    <h1>Dogs</h1>
+
+    <div class="glider-contain">
+      <div class="glider" id="carousel"></div>
+    </div>
+
+    <h2>Breeds</h2>
+    <div id="breedsContainer"></div>
+
+    <div id="breedInfo"></div>
+
+    <div class="audio-box">
+      <h3>Audio Instructions</h3>
+      <p>Say "Hello" for a greeting.</p>
+      <p>Say "Change the color to &lt;color&gt;" to change background color.</p>
+      <p>Say "Navigate to &lt;page&gt;" to change the page.</p>
+      <p>Say "Load Dog Breed &lt;Dog Breed Name&gt;" to load a dog breed.</p>
+      <button onclick="turnOffAudio()">Turn Off Audio</button>
+      <button onclick="turnOnAudio()">Turn On Audio</button>
+    </div>
+
+    <script>
+      function turnOnAudio() {
+        if (annyang) annyang.start();
+      }
+      function turnOffAudio() {
+        if (annyang) annyang.abort();
+      }
+
+      if (annyang) {
+        let commands = {
+          hello: () => alert("Hello World"),
+          "change the color to *color": (color) =>
+            (document.body.style.backgroundColor = color),
+          "navigate to *page": (page) => {
+            let p = page.toLowerCase();
+            if (p.includes("home"))
+              window.location.href = "Assignment2(Home).html";
+            if (p.includes("stock"))
+              window.location.href = "Assignment2(stocks).html";
+            if (p.includes("dog"))
+              window.location.href = "Assignment2(Dogs).html";
+          },
+          "load dog breed *breed": (breedName) => {
+            fetchBreeds(breedName);
+          },
+        };
+        annyang.addCommands(commands);
+      }
+
+      async function loadCarousel() {
+        let r = await fetch("https://dog.ceo/api/breeds/image/random/10");
+        let d = await r.json();
+        let container = document.getElementById("carousel");
+        d.message.forEach((img) => {
+          let image = document.createElement("img");
+          image.src = img;
+          container.appendChild(image);
+        });
+        new Glider(container, { slidesToShow: 1, draggable: true });
+      }
+
+      async function loadBreeds() {
+        let r = await fetch("https://api.thedogapi.com/v1/breeds");
+        let breeds = await r.json();
+        breeds = shuffleArray(breeds);
+        breeds = breeds.slice(0, 10);
+        breeds.forEach((b) => {
+          let btn = document.createElement("button");
+          btn.className = "custom-btn";
+          btn.textContent = b.name;
+          btn.onclick = () => showBreed(b);
+          document.getElementById("breedsContainer").appendChild(btn);
+        });
+      }
+
+      function showBreed(breed) {
+        document.getElementById("breedInfo").style.display = "block";
+        document.getElementById("breedInfo").innerHTML = `
+        <h3>${breed.name}</h3>
+        <p>${breed.temperament || "No description."}</p>
+        <p>Life Span: ${breed.life_span}</p>
+      `;
+      }
+
+      async function fetchBreeds(name) {
+        let r = await fetch("https://api.thedogapi.com/v1/breeds");
+        let breeds = await r.json();
+        let found = breeds.find((b) =>
+          b.name.toLowerCase().includes(name.toLowerCase())
+        );
+        if (found) showBreed(found);
+        else alert("Breed not found");
+      }
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      loadCarousel();
+      loadBreeds();
+    </script>
+  </body>
+</html>

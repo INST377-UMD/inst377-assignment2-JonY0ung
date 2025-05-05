@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    <style>
+      .button-3 {
+        appearance: none;
+        background-color: #2ea44f;
+        border: 1px solid rgba(27, 31, 35, 0.15);
+        border-radius: 6px;
+        box-shadow: rgba(27, 31, 35, 0.1) 0 1px 0;
+        box-sizing: border-box;
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
+          sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+        padding: 6px 16px;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+
+      .button-3:focus:not(:focus-visible):not(.focus-visible) {
+        box-shadow: none;
+        outline: none;
+      }
+
+      .button-3:hover {
+        background-color: #2c974b;
+      }
+
+      .button-3:focus {
+        box-shadow: rgba(46, 164, 79, 0.4) 0 0 0 3px;
+        outline: none;
+      }
+
+      .button-3:disabled {
+        background-color: #94d3a2;
+        border-color: rgba(27, 31, 35, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        cursor: default;
+      }
+
+      .button-3:active {
+        background-color: #298e46;
+        box-shadow: rgba(20, 70, 32, 0.2) 0 1px 0 inset;
+      }
+
+      body {
+        text-align: center;
+        margin-top: 100px;
+        font-family: Arial, sans-serif;
+      }
+
+      .header-footer {
+        text-align: center;
+        background-color: #333;
+        color: white;
+        padding: 20px;
+        margin: 10px;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 10px;
+        background-color: #4264e2;
+      }
+
+      nav ul li {
+        display: inline;
+      }
+
+      nav ul li a {
+        text-decoration: none;
+        color: rgb(77, 203, 128);
+        padding: 10px;
+      }
+
+      nav ul li a:hover {
+        background-color: #a27878;
+      }
+
+      .quote-section {
+        text-align: center;
+        padding: 20px;
+      }
+
+      .quote-section p {
+        font-size: 20px;
+        font-style: italic;
+        color: #555;
+      }
+
+      .content {
+        display: flex;
+        width: 80%;
+        margin: auto;
+        gap: 20px;
+      }
+
+      main {
+        width: 70%;
+        padding: 15px;
+      }
+
+      input[type="text"] {
+        transition: width 0.3s ease;
+        width: 150px;
+      }
+
+      input[type="text"]:focus {
+        width: 200px;
+      }
+
+      .custom-btn {
+        background-color: #4caf50;
+        border: none;
+        color: white;
+        padding: 10px 24px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 8px;
+      }
+
+      .audio-box {
+        border: 2px solid black;
+        padding: 10px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header-footer">
+      <h1>DeJon Young INST 377 Assignment 2</h1>
+    </div>
+
+    <nav>
+      <ul>
+        <li><a href="Assignment2(Home).html">Home</a></li>
+        <li><a href="Assignment2(stocks).html">Stocks</a></li>
+        <li><a href="Assignment2(Dogs).html">Dogs</a></li>
+      </ul>
+    </nav>
+    <div class="buttons">
+      <button
+        class="button-3"
+        onclick="window.location.href='Assignment2(stocks).html'"
+      >
+        Stocks
+      </button>
+      <button
+        class="button-3"
+        onclick="window.location.href='Assignment2(Dogs).html'"
+      >
+        Dogs
+      </button>
+    </div>
+    <div class="quote-section">
+      <p id="quote">Loading Quote...</p>
+    </div>
+
+    <div class="audio-box">
+      <h3>Audio Instructions</h3>
+      <p>Say "Hello" for a greeting.</p>
+      <p>Say "Change the color to &lt;color&gt;" to change background color.</p>
+      <p>Say "Navigate to &lt;page&gt;" to change the page.</p>
+      <button onclick="turnOffAudio()">Turn Off Audio</button>
+      <button onclick="turnOnAudio()">Turn On Audio</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+    <script>
+      if (annyang) {
+        let commands = {
+          hello: () => alert("Hello World"),
+          "change the color to *color": (color) =>
+            (document.body.style.backgroundColor = color),
+          "navigate to *page": (page) => {
+            let p = page.toLowerCase();
+            if (p.includes("home"))
+              window.location.href = "Assignment2(Home).html";
+            if (p.includes("stock"))
+              window.location.href = "Assignment2(stocks).html";
+            if (p.includes("dog"))
+              window.location.href = "Assignment2(Dogs).html";
+          },
+        };
+        annyang.addCommands(commands);
+      }
+
+      function turnOffAudio() {
+        annyang.abort();
+      }
+
+      function turnOnAudio() {
+        if (annyang) {
+          annyang.start();
+        }
+      }
+
+      fetch("https://zenquotes.io/api/random")
+        .then((response) => response.json())
+        .then((data) => {
+          const quote = data[0].q;
+          const author = data[0].a;
+          document.getElementById("quote").innerHTML = `"${quote}" - ${author}`;
+        })
+        .catch((error) => {
+          document.getElementById("quote").innerHTML =
+            "Sorry, we couldn't load the quote at the moment.";
+          console.error("Error fetching quote:", error);
+        });
+    </script>
+  </body>
+</html>
